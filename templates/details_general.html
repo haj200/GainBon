@@ -1,0 +1,400 @@
+{% extends "base_client.html" %}
+
+{% block title %}Détails - Informations générales{% endblock %}
+
+{% block content %}
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+<div class="flash-messages">
+  {% for category, message in messages %}
+  {% if category != "success" %}
+  <div class="flash-message {{ category }}">{{ message }}</div>
+  {% endif %}
+  {% endfor %}
+</div>
+{% endif %}
+{% endwith %}
+{% if bon %}
+<div class="details-header">
+  <div class="details-title">
+    <h2>{{ (bon.objet or 'Bon de commande')|capitalize }}</h2>
+    {% if is_new %}
+    <div class="details-actions">
+      <a class="action-link" href="{{ url_for('bdc.details_similaires', bon_id=bon.id) }}"><i class="fas fa-link"></i>
+        Bons similaires</a>
+      <a class="action-link" href="{{ url_for('bdc.details_recherche', bon_id=bon.id) }}"><i class="fas fa-search"></i>
+        Recherche</a>
+    </div>
+    {% else %}
+    <div class="details-actions">
+      <a href="#" class="action-link"
+        onclick="event.preventDefault(); window.history.length > 1 ? history.back() : window.location.href='{{ url_for('bdc.details', bon_id=bon.id) }}'">
+        Retour
+      </a>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<div class="details-grid">
+  <div class="info-card">
+    <div class="info-label">Référence</div>
+    <div class="info-value with-action">
+      <span id="referenceValue">{{ bon.reference }}</span>
+      <button class="icon-btn" title="Copier" data-copy-target="#referenceValue"><i class="fas fa-copy"></i></button>
+    </div>
+  </div>
+
+  <div class="info-card">
+    <div class="info-label">Nature</div>
+    <div class="info-value">{{ bon.nature }}</div>
+  </div>
+
+  <div class="info-card">
+    <div class="info-label">Lieu</div>
+    <div class="info-value">{{ bon.lieu }}</div>
+  </div>
+
+  <div class="info-card">
+    <div class="info-label">Catégorie</div>
+    <div class="info-value">{{ bon.categorie }}</div>
+  </div>
+
+  <div class="info-card">
+    <div class="info-label">Acheteur</div>
+    <div class="info-value">{{ bon.acheteur }}</div>
+  </div>
+
+  <div class="info-card">
+    <div class="info-label">Montant</div>
+    <div class="info-value">{{ bon.montant_str or (bon.montant ~ ' €') }}</div>
+  </div>
+
+  <div class="info-card">
+    <div class="info-label">Date limite</div>
+    <div class="info-value">{{ bon.date_limite_str or bon.date_limite }}</div>
+  </div>
+
+  <div class="info-card">
+    <div class="info-label">Mise en ligne</div>
+    <div class="info-value">{{ bon.date_mise_en_ligne_str or bon.date_mise_en_ligne }}</div>
+  </div>
+
+
+
+  <div class="info-card info-card--wide">
+    <div class="info-label">Articles</div>
+    <div class="info-value">
+      {% set articles_count = bon.articles|length if bon.articles else 0 %}
+      <div class="articles-summary">
+        <span>{{ articles_count }} article(s)</span>
+        <button id="toggleArticles" class="pill-btn"><i class="fas fa-list"></i> Voir le détail</button>
+      </div>
+      <div id="articlesBlock" class="articles-table" hidden>
+        {% set articles = bon.articles or [] %}
+        {% if articles %}
+        {% for article in articles %}
+        {% if article is mapping %}
+        <div class="table-responsive" style="margin-bottom: 20px;">
+          <table>
+            <thead>
+              <tr>
+                <th colspan="5">
+                  {{ article.get('titre') or ('Article ' ~ loop.index) }}
+                </th>
+              </tr>
+              <tr>
+                <th>Qtité</th>
+                <th>Unité</th>
+                <th>TVA</th>
+                <th>Exigences</th>
+                <th>Caractéristiques</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{{ article.get('quantite') or article.get('qte') or 'non spécifié' }}</td>
+                <td>{{ article.get('unite') or 'non spécifié' }}</td>
+                <td>{{ article.get('tva') or 'non spécifié' }}</td>
+                <td>{{ article.get('exigences') or 'non spécifié' }}</td>
+                <td>{{ article.get('caracteristiques') or 'non spécifié' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="muted">{{ article }}</div>
+        {% endif %}
+        {% endfor %}
+        {% else %}
+        <div class="muted">Aucun article</div>
+        {% endif %}
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endif %}
+<style>
+  .details-header {
+    margin-bottom: 18px;
+  }
+
+  .details-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .details-title h2 {
+    font-family: var(--font-family-headings);
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin: 0;
+  }
+
+  .details-actions {
+    display: flex;
+    gap: 10px;
+  }
+
+  .action-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #2A65F8, #1a52d4);
+    color: #fff;
+    padding: 8px 14px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: transform .2s ease, box-shadow .2s ease;
+  }
+
+  .action-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(42, 101, 248, .25);
+  }
+
+  .details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+  }
+
+  .info-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, .04);
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity .4s ease, transform .4s ease;
+  }
+
+  .info-card.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .info-card--wide {
+    grid-column: 1 / -1;
+  }
+
+  .info-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--text-light);
+    margin-bottom: 6px;
+  }
+
+  .info-value {
+    font-size: 16px;
+    color: var(--text-dark);
+    word-break: break-word;
+  }
+
+  .with-action {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .icon-btn {
+    border: 1px solid var(--border-color);
+    background: #fff;
+    color: var(--primary-blue);
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background .2s ease, transform .2s ease;
+  }
+
+  .icon-btn:hover {
+    background: rgba(42, 101, 248, .08);
+    transform: translateY(-1px);
+  }
+
+  .pill-btn {
+    background: rgba(42, 101, 248, .1);
+    color: var(--primary-blue);
+    border: none;
+    padding: 6px 10px;
+    border-radius: 999px;
+    cursor: pointer;
+    font-weight: 600;
+  }
+
+  .pill-btn:hover {
+    background: rgba(42, 101, 248, .18);
+  }
+
+  .articles-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .table-responsive {
+    width: 100%;
+    overflow: auto;
+  }
+
+  .articles-table table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .articles-table th,
+  .articles-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border-color);
+    text-align: left;
+    vertical-align: top;
+  }
+
+  .articles-table thead th {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--text-light);
+    background: #f4f7ff;
+    position: sticky;
+    top: 0;
+  }
+
+  .articles-table tbody tr:hover {
+    background: rgba(42, 101, 248, .04);
+  }
+
+  .kv-list {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 8px 16px;
+  }
+
+  .kv-list dt {
+    color: var(--text-light);
+    font-size: 12px;
+    text-transform: uppercase;
+  }
+
+  .kv-list dd {
+    margin: 0;
+  }
+
+  .simple-list {
+    margin: 0;
+    padding-left: 18px;
+  }
+
+  .muted {
+    color: var(--text-light);
+  }
+  .flash-messages {
+	margin: 20px auto;
+	width: 90%;
+	max-width: 600px;
+	padding: 10px;
+  }
+  
+  .flash-message {
+	padding: 12px 16px;
+	margin-bottom: 10px;
+	border-radius: 6px;
+	font-size: 0.95rem;
+	font-weight: 500;
+	box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+	transition: all 0.3s ease;
+  }
+  
+  /* Success */
+  .flash-message.success {
+	background-color: #d4edda;
+	color: #155724;
+	border-left: 6px solid #28a745;
+  }
+  
+  /* Error */
+  .flash-message.error {
+	background-color: #f8d7da;
+	color: #721c24;
+	border-left: 6px solid #dc3545;
+  }
+  
+  /* Warning */
+  .flash-message.warning {
+	background-color: #fff3cd;
+	color: #856404;
+	border-left: 6px solid #ffc107;
+  }
+  
+  /* Info */
+  .flash-message.info {
+	background-color: #d1ecf1;
+	color: #0c5460;
+	border-left: 6px solid #17a2b8;
+  }
+</style>
+
+<script>
+  // Reveal on scroll
+  const cards = document.querySelectorAll('.info-card');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('show'); io.unobserve(e.target); } });
+  }, { threshold: 0.06 });
+  cards.forEach(c => io.observe(c));
+
+  // Copy to clipboard
+  document.querySelectorAll('[data-copy-target]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = document.querySelector(btn.getAttribute('data-copy-target'));
+      if (!target) return;
+      const text = target.textContent.trim();
+      navigator.clipboard?.writeText(text).then(() => {
+        btn.innerHTML = '<i class="fas fa-check"></i>';
+        setTimeout(() => btn.innerHTML = '<i class="fas fa-copy"></i>', 1200);
+      });
+    });
+  });
+
+  // Articles toggle (table déjà rendue côté serveur)
+  const toggle = document.getElementById('toggleArticles');
+  const block = document.getElementById('articlesBlock');
+  if (toggle && block) {
+    toggle.addEventListener('click', () => {
+      block.hidden = !block.hidden;
+      toggle.innerHTML = block.hidden ? '<i class="fas fa-list"></i> Voir le détail' : '<i class="fas fa-eye-slash"></i> Masquer le détail';
+    });
+  }
+</script>
+{% endblock %}

@@ -1,0 +1,252 @@
+{% extends "base_client.html" %}
+
+{% block title %}GainBon - Mes Opportunités{% endblock %}
+
+{% block content %}
+
+<h1 class="content-title" style="color: var(--primary-blue); font-weight: 700; letter-spacing: 0.5px;">
+  Vos Opportunités et Favoris
+</h1>
+
+<div class="bdc-grid">
+  {% for bdc in bdcs %}
+  <div class="bdc-card">
+    <!-- HEADER -->
+    <div class="bdc-card-header">
+      <h3 class="bdc-card-title">{{ (bdc.objet or "Bon de commande")|capitalize }}</h3>
+      <button class="fav-btn" title="Ajouter aux favoris" data-bon='{{ {
+        "id": bdc.id,
+        "reference": bdc.reference,
+        "lieu": bdc.lieu,
+        "nature": bdc.nature,
+        "date_limite": bdc.date_limite_str
+      } | tojson | safe }}'>
+        <i class="{% if bdc.id in user_favs_ids %}fas{% else %}far{% endif %} fa-star"></i>
+      </button>
+
+    </div>
+
+    <!-- BODY -->
+    <div class="bdc-card-body">
+      <p class="bdc-card-object">{{ bdc.nature }}</p>
+      <ul class="bdc-card-details">
+        <li><strong>Référence:</strong> {{ bdc.reference }}</li>
+        <li><strong>Acheteur:</strong> {{ bdc.acheteur }}</li>
+        <li><strong>Date limite:</strong> {{ bdc.date_limite_str }}</li>
+      </ul>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="bdc-card-footer">
+      <div class="bdc-card-prediction">
+        <span>Montant Prédit</span>
+        <strong>{{ bdc.montant_str or "N/A" }}</strong>
+      </div>
+      <a href="{{ url_for('bdc.details', bon_id=bdc.id) }}" class="bdc-card-action">Voir Détails</a>
+    </div>
+  </div>
+  {% else %}
+  <div class="content-card" style="text-align: center; padding: 20px;">
+    <p>Aucun bon de commande à afficher pour le moment.</p>
+  </div>
+  {% endfor %}
+</div>
+
+<!-- PAGINATION -->
+<div class="pagination">
+  {% if page > 1 %}
+  <a href="{{ url_for('favouris.get_favouris', page=page-1) }}" class="pagination-link">
+    <i class="fas fa-arrow-left"></i> Précédent
+  </a>
+  {% endif %}
+  {% if has_more %}
+  <a href="{{ url_for('favouris.get_favouris', page=page+1) }}" class="pagination-link">
+    Suivant <i class="fas fa-arrow-right"></i>
+  </a>
+  {% endif %}
+</div>
+
+<style>
+  .bdc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 25px;
+    margin-bottom: 30px;
+  }
+
+  .fav-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #cbd5e1;
+    font-size: 20px;
+    padding: 0;
+    transition: color 0.3s;
+  }
+
+  .fav-btn:hover,
+  .fav-btn .fas.fa-star {
+    color: #fbbf24;
+    /* Jaune doré */
+  }
+
+  .bdc-card {
+    background: white;
+    border-radius: 14px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease;
+    border-top: 4px solid var(--primary-blue);
+  }
+
+  .bdc-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08);
+  }
+
+  .bdc-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 20px 10px;
+    border-bottom: 1px solid #e9edf5;
+  }
+
+  .bdc-card-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--primary-blue);
+    margin: 0;
+  }
+
+  .heart-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #cbd5e1;
+    font-size: 20px;
+    padding: 0;
+    transition: color 0.3s;
+  }
+
+  .heart-btn:hover,
+  .heart-btn .fas.fa-heart {
+    color: #e53e3e;
+  }
+
+  .bdc-card-body {
+    padding: 18px 20px;
+    flex-grow: 1;
+  }
+
+  .bdc-card-object {
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: #1e293b;
+    line-height: 1.4;
+  }
+
+  .bdc-card-details {
+    list-style: none;
+    padding: 0;
+    font-size: 14px;
+    color: #64748b;
+  }
+
+  .bdc-card-details li {
+    margin-bottom: 6px;
+  }
+
+  .bdc-card-details strong {
+    color: #1e293b;
+  }
+
+  .bdc-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 20px;
+    background-color: #f8fafc;
+    border-top: 1px solid #e9edf5;
+    border-radius: 0 0 14px 14px;
+  }
+
+  .bdc-card-prediction span {
+    font-size: 12px;
+    color: #94a3b8;
+  }
+
+  .bdc-card-prediction strong {
+    display: block;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--primary-blue);
+  }
+
+  .bdc-card-action {
+    background-color: var(--primary-blue);
+    color: white;
+    padding: 8px 14px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 14px;
+    transition: all 0.3s;
+  }
+
+  .bdc-card-action:hover {
+    background-color: #1a52d4;
+  }
+
+  .pagination {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+  }
+
+  .pagination-link {
+    background-color: white;
+    border: 1px solid #e2e8f0;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--primary-blue);
+    font-weight: 600;
+    transition: all 0.3s;
+  }
+
+  .pagination-link:hover {
+    background-color: var(--primary-blue);
+    color: white;
+    border-color: var(--primary-blue);
+  }
+</style>
+
+<script>
+  document.querySelectorAll('.fav-btn').forEach(button => {
+    button.addEventListener('click', async function () {
+      const bon = JSON.parse(this.dataset.bon);
+      const icon = this.querySelector('i');
+      try {
+        const res = await fetch('/favouris/toggle_favourite', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ bon })
+        });
+        const data = await res.json();
+        if (data.success) {
+          icon.classList.toggle('fas', data.action === 'added');
+          icon.classList.toggle('far', data.action !== 'added');
+        } else {
+          alert("Erreur : " + data.error);
+        }
+      } catch (error) {
+        console.error('Erreur réseau :', error);
+      }
+    });
+  });
+
+</script>
+
+{% endblock %}

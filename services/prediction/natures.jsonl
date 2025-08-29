@@ -1,0 +1,100 @@
+{"name": "Prestations d’hôtellerie, d’hébergement, de réception et de restauration", "id": 1}
+{"name": "Achat d’articles de droguerie, de quincaillerie, d’électricité, de menuiserie et de plomberie sanitaire", "id": 2}
+{"name": "Fournitures et pièces de rechange pour matériel technique et informatique", "id": 3}
+{"name": "Fourniture de verrerie, petit matériel et outillage de laboratoire", "id": 4}
+{"name": "Achat de matériel technique, de logiciels et de matériel informatique", "id": 5}
+{"name": "Études, conseil et formation", "id": 6}
+{"name": "Prestations d’entretien, de rééquilibrage, d’étalonnage et de réparation des équipements de laboratoires", "id": 7}
+{"name": "Achat de produits chimiques et de laboratoire, pesticides et insecticides", "id": 8}
+{"name": "Location d’engins et de moyens de transport de matériels et matériaux et d’engins", "id": 9}
+{"name": "Achat de carburants et de lubrifiants", "id": 10}
+{"name": "Achat de produits pour traitement d’eau potable", "id": 11}
+{"name": "Travaux d’aménagement, d’entretien et de réparation des bâtiments administratifs", "id": 12}
+{"name": "Achat de matériel et de mobilier de bureau", "id": 13}
+{"name": "Location de moyens de transport des personnes (voitures et autocars)", "id": 14}
+{"name": "Travaux d’aménagement, d’entretien et de réparation des ouvrages, voies et réseaux", "id": 15}
+{"name": "Prestations de remise en état et de recharge des extincteurs", "id": 16}
+{"name": "Achat de matériel électrique, de groupes électrogènes, d’électropompes et de motopompes de chantier", "id": 17}
+{"name": "Travaux d’installation de matériels divers", "id": 18}
+{"name": "Prestations de déménagement", "id": 19}
+{"name": "Achat de fournitures de bureau et de documentation", "id": 20}
+{"name": "Prestations d’impression, de tirage, de reproduction et de photographie", "id": 21}
+{"name": "Achat de badges, de médailles, d’effigies, de fanions, de drapeaux et de portraits", "id": 22}
+{"name": "Transport, acconage, magasinage et transit", "id": 23}
+{"name": "Achat de papeteries et d’imprimés", "id": 24}
+{"name": "Achat de produits pharmaceutiques non-médicamenteux, de gaz médicaux et de réactifs de laboratoires", "id": 25}
+{"name": "Location de matériel et de mobilier", "id": 26}
+{"name": "Achat de produits alimentaires pour usage humain", "id": 27}
+{"name": "Achat de matériel de navigation et de transmission", "id": 28}
+{"name": "Fournitures et produits d’entretien et de nettoyage", "id": 29}
+{"name": "Achat de matériel audiovisuel, sonore et de mise en lumière", "id": 30}
+{"name": "Prestations d’entretien des véhicules et engins", "id": 31}
+{"name": "Fournitures pour le traitement et la conservation préventive des archives", "id": 32}
+{"name": "Achat de matériel de sécurité et de lutte contre l’incendie", "id": 33}
+{"name": "Achat de matières premières pour le textile, le cuir, la reliure des documents et autres", "id": 34}
+{"name": "Achat de pièces de rechange et pneumatiques pour véhicules et engins", "id": 35}
+{"name": "Fourniture d’équipements médico-techniques et de pièces de rechange y afférentes", "id": 36}
+{"name": "Achat d’habillement", "id": 37}
+{"name": "Prestations topographiques et océanographiques", "id": 38}
+{"name": "Prestations d’assistance et de conseil technique, juridique et comptable", "id": 39}
+{"name": "Achat de matériels et articles de sport, de literie, de linge, de couchage, de cuisine et de buanderie", "id": 40}
+{"name": "Entretien et réparation de matériel technique, de mobilier et des installations techniques", "id": 41}
+{"name": "Achat de cartables, de livres, de manuels, et de fournitures scolaires et de matériel d’enseignement", "id": 42}
+{"name": "Prestations géotechniques et de laboratoire", "id": 43}
+{"name": "Achat d’affiches et d’articles publicitaires", "id": 44}
+{"name": "Achat de matériel de transport, de citernes et d’engins", "id": 45}
+{"name": "Fourniture de l’instrumentation médicotechnique", "id": 46}
+{"name": "Achat de matériaux de construction", "id": 47}
+{"name": "Contrôle et expertise techniques", "id": 48}
+{"name": "Achat de matières premières pour laboratoire et enseignement", "id": 49}
+{"name": "Achat de produits d’impression, de reproduction et de photographie", "id": 50}
+{"name": "Achat de pièces de rechange pour matériel technique et informatique", "id": 51}
+{"name": "Entretien et maintenance des équipements informatique", "id": 52}
+{"name": "Fourniture de films et de produits radiologiques", "id": 53}
+{"name": "Achat d’articles de correction de la vue et articles pour personnes à besoins spécifiques", "id": 54}
+{"name": "Organisation de manifestations culturelles, scientifiques et sportives", "id": 55}
+{"name": "Achat de médicaments", "id": 56}
+{"name": "Prestation de jardinage, de gardiennage et de nettoyage", "id": 57}
+{"name": "Achat de matériel d’éclairage public", "id": 58}
+{"name": "Travaux d’aménagement des espaces verts avec ou sans fourniture de graines et plantes", "id": 59}
+{"name": "Fourniture de fongibles médicaux et de fils chirurgicaux", "id": 60}
+{"name": "Prestations médicales, hospitalières, radiologiques, d’analyse médicale et de brancardage", "id": 61}
+{"name": "Direction, animation et participation des artistes, intellectuels, conférenciers et techniciens aux manifestations et activités culturelles", "id": 62}
+{"name": "Travaux de branchement et d’extension du réseau d’eau potable et d’électricité", "id": 63}
+{"name": "Traduction simultanée et traduction des documents et des œuvres littéraires, scientifiques, culturelles ou juridiques", "id": 64}
+{"name": "Prestations de publicité, de sensibilisation et supports multimédia", "id": 65}
+{"name": "Fourniture d’engrais, de graines, de plantes, de plants et de portoirs", "id": 66}
+{"name": "Travaux de raccordement au réseau d’assainissement et de curage", "id": 67}
+{"name": "Prestations de collecte et de traitement de déchets hospitaliers", "id": 68}
+{"name": "Achat de matériel de diagnostic, de recherche, de détection, de signalisation de défaut et de matériel de mesure", "id": 69}
+{"name": "Fourniture de combustibles et de produits de chauffage", "id": 70}
+{"name": "Travaux d’aménagement, d’entretien et de réparation des logements militaires", "id": 71}
+{"name": "Travaux d’équipement et de renforcement des postes MT/BT du réseau d’électricité", "id": 72}
+{"name": "Prestations de contrôle et d’analyse des échantillons prélevés sur les produits, matériel et matériaux soumis à des normes obligatoires", "id": 73}
+{"name": "Achat de produits alimentaires pour usage animal", "id": 74}
+{"name": "Entretien et maintenance de logiciels et de progiciels", "id": 75}
+{"name": "Achat de mobilier, d’enseignement, de laboratoire et d’exposition", "id": 76}
+{"name": "Location de camions citernes", "id": 77}
+{"name": "Location de salles, de stands et de mobilier d’exposition", "id": 78}
+{"name": "Achat de matériel, de câbles, coffrets de distribution, de poteaux et autres accessoires de branchements moyenne tension et basse tension", "id": 79}
+{"name": "Fourniture de sacs et produits d’emballage", "id": 80}
+{"name": "Achat, développement, production ou coproduction de programmes ou de films destinés à la diffusion par des organismes de radiodiffusion et de télévision et dans les sites électroniques et du temps de diffusion", "id": 81}
+{"name": "Fourniture des consommables dentaires", "id": 82}
+{"name": "Fournitures pour inauguration et pose de premières pierres", "id": 83}
+{"name": "Achat de pièces de rechange pour les équipements médicotechniques", "id": 84}
+{"name": "Prestations de désinsectisation, de dératisation et prestations de lutte contre les animaux errants", "id": 85}
+{"name": "Fourniture de prothèses et orthèses", "id": 86}
+{"name": "Travaux d’aménagement et d’entretien des installations militaires", "id": 87}
+{"name": "Achat d’animaux", "id": 88}
+{"name": "Prestations de collecte, de traitement et de blanchissage du linge", "id": 89}
+{"name": "Achat de produits vétérinaires et de produits d’élevage aquacole", "id": 90}
+{"name": "Entretien, dépoussiérage et traitement chimique des archives et des livres", "id": 91}
+{"name": "Prestations de mise en place des outils de gestion technique et de détection de fuites", "id": 92}
+{"name": "Montage et démontage du matériel hydraulique et électromécanique", "id": 93}
+{"name": "Fourniture d’alevins, de naissains, de boutures d’algues, d’animaux marins et poissons", "id": 94}
+{"name": "Achat de matériel et d’équipement de plongée sous-marine", "id": 95}
+{"name": "Prestations de contrôle des points de comptage", "id": 96}
+{"name": "Collecte des produits biologiques et sanguins", "id": 97}
+{"name": "Achat de cartes géographiques, topographiques, géologiques et de photographies aériennes", "id": 98}
+{"name": "Prestations de centres d’appels, de télémarketing et de télé-service", "id": 99}
+{"name": "Achat de piges", "id": 100}

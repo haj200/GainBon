@@ -1,0 +1,112 @@
+{% extends "base_client.html" %}
+
+{% block title %}Détails - Bons similaires{% endblock %}
+
+{% block content %}
+<div class="details-header">
+  <div class="details-title">
+    <h2>Aperçu de l'hystorique : Bons similaires</h2>
+    <div class="details-actions">
+      <a class="action-link" href="{{ url_for('bdc.details', bon_id=bon.id) }}"><i class="fas fa-info-circle"></i> Informations</a>
+      <a class="action-link" href="{{ url_for('bdc.details_recherche', bon_id=bon.id) }}"><i class="fas fa-search"></i> Recherche</a>
+    </div>
+  </div>
+</div>
+
+{% if bons_similaires %}
+  <div class="bdc-grid">
+    {% for b in bons_similaires %}
+      <div class="bdc-card reveal">
+        <div class="bdc-card-header">
+          <h3 class="bdc-card-title">{{ (b.objet or 'Bon de commande')|capitalize }}</h3>
+        </div>
+        <div class="bdc-card-body">
+          <ul class="bdc-card-details">
+            <li><strong>Référence</strong> {{ b.reference }}</li>
+            <li><strong>Nature</strong> {{ b.nature }}</li>
+            <li><strong>Lieu</strong> {{ ' '.join(b.lieu.split()[:10]) }}</li>
+            <li><strong>Date</strong> {{ b.date_mise_en_ligne }}</li>
+            <li><strong>Montant</strong> {{ b.montant_str }}</li>
+          </ul>
+        </div>
+        <div class="bdc-card-footer">
+          <a href="{{ url_for('bdc.details', bon_id=b.id) }}" class="bdc-card-action">Voir Détails</a>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="content-card"><p>Aucun bon similaire disponible.</p></div>
+{% endif %}
+
+
+
+<style>
+  .details-header { margin-bottom: 18px; }
+  .details-title { display:flex; justify-content: space-between; align-items:center; }
+  .details-title h2 { font-family: var(--font-family-headings); font-size: 24px; font-weight: 700; color: var(--text-dark); margin: 0; }
+  .details-actions { display:flex; gap:10px; }
+  .action-link {
+    display:inline-flex; align-items:center; gap:8px;
+    background: linear-gradient(135deg, #2A65F8, #1a52d4);
+    color:#fff; padding:8px 14px; border-radius:8px; text-decoration:none; font-weight:600;
+    transition: transform .2s ease, box-shadow .2s ease;
+  }
+  .action-link:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(42,101,248,.25); }
+
+  .bdc-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 18px; }
+  .bdc-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    box-shadow: 0 6px 18px rgba(0,0,0,.05);
+    display:flex; flex-direction:column;
+    transition: transform .3s ease, box-shadow .3s ease, opacity .4s ease;
+    opacity:0; transform: translateY(8px);
+  }
+  .bdc-card.reveal.show { opacity:1; transform: translateY(0); }
+  .bdc-card:hover { transform: translateY(-4px); box-shadow: 0 10px 26px rgba(0,0,0,.08); }
+  .bdc-card-header { display:flex; justify-content:space-between; align-items:center; padding: 16px 18px 8px; border-bottom: 1px solid #e9edf5; }
+  .bdc-card-title { font-size: 18px; font-weight: 600; color: var(--primary-blue); margin: 0; }
+  .bdc-card-body { padding: 14px 18px; flex-grow:1; }
+  .bdc-card-details { list-style:none; padding:0; margin:0; font-size: 14px; color:#64748b; }
+  .bdc-card-details li { margin-bottom: 6px; }
+  .bdc-card-details strong { color:#1e293b; margin-right: 6px; }
+  .bdc-card-footer { display:flex; justify-content:flex-end; align-items:center; padding: 12px 18px; background:#f8fafc; border-top:1px solid #e9edf5; border-radius: 0 0 14px 14px; }
+  .bdc-card-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #2A65F8, #1a52d4);
+    color: #fff;
+    padding: 8px 14px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    box-shadow: 0 6px 14px rgba(26, 82, 212, 0.25);
+    transition: transform .2s ease, box-shadow .2s ease, filter .2s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .bdc-card-action:hover { transform: translateY(-2px); box-shadow: 0 10px 22px rgba(26,82,212,.3); filter: brightness(1.02); }
+  .bdc-card-action:active { transform: translateY(0); box-shadow: 0 6px 14px rgba(26,82,212,.25); }
+  .bdc-card-action::after {
+    content: "\f061"; /* fa-arrow-right */
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    font-size: 12px;
+    margin-left: 6px;
+  }
+</style>
+
+<script>
+  // Reveal animation
+  const cards = document.querySelectorAll('.bdc-card.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('show'); io.unobserve(e.target); } });
+  }, { threshold: 0.08 });
+  cards.forEach(c => io.observe(c));
+</script>
+{% endblock %}
+
+

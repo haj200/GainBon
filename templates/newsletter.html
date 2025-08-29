@@ -1,0 +1,164 @@
+{% extends "base_client.html" %}
+{% block title %}Newsletter{% endblock %}
+
+{% block content %}
+<h2 class="content-title">Mes notifications</h2>
+<div class="notifications-list">
+  {% for notif in notifications %}
+    <div class="notification-card {{ notif.type }} {% if not notif.is_read %}unread{% endif %}">
+      <a href="{{ url_for('bdc.details', bon_id=notif.bon_id) }}">
+        <div class="notif-row">
+          {% set icon_map = {'alerte': 'fa-triangle-exclamation', 'info': 'fa-circle-info', 'suggestion': 'fa-lightbulb'} %}
+          <div class="notif-icon"><i class="fas {{ icon_map.get(notif.type, 'fa-bell') }}"></i></div>
+          <div class="notif-content">
+            <div class="notif-header">
+              
+              <span class="notif-date">{{ notif.date.strftime('%d/%m/%Y %H:%M') }}</span>
+            </div>
+            <p>{{ notif.contenu|truncate(100) }}</p>
+            {% if notif.temps_restant_jours %}
+              <small>Temps restant : {{ notif.temps_restant_jours }} jours</small>
+            {% endif %}
+            <div class="bdc-card-footer">
+              <a href="{{ url_for('bdc.details', bon_id=notif.bon_id) }}" class="bdc-card-action">Bon concerné</a>
+            </div>
+          </div>
+        </div>
+      </a>
+    </div>
+  {% else %}
+    <p>Aucune notification pour le moment.</p>
+  {% endfor %}
+</div>
+
+<style>
+  .notifications-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 16px;
+  }
+  
+  .notification-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-left: 6px solid var(--primary-blue);
+    border-radius: 14px;
+    padding: 18px 22px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.05);
+    transition: transform .2s ease, box-shadow .2s ease, opacity .4s ease;
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  .notif-row { display: grid; grid-template-columns: 48px 1fr; gap: 14px; align-items: flex-start; }
+  .notif-icon { width: 48px; height: 48px; border-radius: 12px; display:flex; align-items:center; justify-content:center; background: rgba(42,101,248,.10); color: #2A65F8; }
+  .notif-icon i { font-size: 20px; }
+  
+  .notification-card.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  .notification-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 26px rgba(0,0,0,0.08);
+  }
+  
+  .notification-card.unread { background: linear-gradient(145deg, rgba(42,101,248,0.06), rgba(42,101,248,0.02)); }
+  .notification-card.unread.alerte { background: linear-gradient(145deg, rgba(231,76,60,0.06), rgba(231,76,60,0.02)); }
+  .notification-card.unread.suggestion { background: linear-gradient(145deg, rgba(39,174,96,0.06), rgba(39,174,96,0.02)); }
+  
+  /* Variantes par type */
+  .notification-card.alerte { border-left-color: #e74c3c; }
+  .notification-card.info { border-left-color: #2A65F8; }
+  .notification-card.suggestion { border-left-color: #27ae60; }
+
+  .notification-card.alerte .notif-icon { background: rgba(231,76,60,0.12); color: #e74c3c; }
+  .notification-card.info .notif-icon { background: rgba(42,101,248,0.12); color: #2A65F8; }
+  .notification-card.suggestion .notif-icon { background: rgba(39,174,96,0.12); color: #27ae60; }
+  
+  /* En-tête */
+  .notif-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .notif-type {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #fff;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #2A65F8, #1a52d4);
+    letter-spacing: .05em;
+  }
+  .notification-card.alerte .notif-type { background: #e74c3c; }
+  .notification-card.info .notif-type { background: #2A65F8; }
+  .notification-card.suggestion .notif-type { background: #2ecc71; }
+  
+  .notif-date {
+    font-size: 0.8rem;
+    color: var(--text-light);
+  }
+  
+  .notification-card p {
+    margin: 0;
+    color: var(--text-dark);
+    font-size: 0.95rem;
+    line-height: 1.45;
+  }
+  
+  .notification-card small {
+    display: block;
+    margin-top: 8px;
+    font-size: 0.8rem;
+    color: var(--text-light);
+  }
+  
+  .notification-card a {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+  .bdc-card-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #f4f5f7, #f4f4f6);
+    color: #fff;
+    padding: 8px 14px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    box-shadow: 0 6px 14px rgba(26, 82, 212, 0.25);
+    transition: transform .2s ease, box-shadow .2s ease, filter .2s ease;
+    position: relative;
+    overflow: hidden;
+    margin: 20px;
+  }
+  .bdc-card-action:hover { transform: translateY(-2px); box-shadow: 0 10px 22px rgba(26,82,212,.3); filter: brightness(1.02); }
+  .bdc-card-action:active { transform: translateY(0); box-shadow: 0 6px 14px rgba(26,82,212,.25); }
+  .bdc-card-action::after {
+    content: "\f061"; /* fa-arrow-right */
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    font-size: 12px;
+    margin-left: 6px;
+  }
+  </style>
+
+<script>
+  // Apparition progressive des cartes
+  const notifCards = document.querySelectorAll('.notification-card');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('show'); io.unobserve(e.target); } });
+  }, { threshold: 0.08 });
+  notifCards.forEach(c => io.observe(c));
+</script>
+  
+  
+{% endblock %}

@@ -1,0 +1,163 @@
+{% extends "base_client.html" %}
+{% block title %}explore{% endblock %}
+
+{% block content %}
+
+<style>
+  .container {
+    max-width: 900px;
+    margin: 2rem auto;
+    background: #fff;
+    padding: 2.5rem 3rem;
+    border-radius: 14px;
+    box-shadow: 0 0 20px rgba(155, 89, 182, 0.15);
+    font-family: 'Segoe UI', sans-serif;
+  }
+
+  h1, h2 {
+    color: #3407d9;
+    margin-bottom: 1rem;
+    font-weight: 700;
+  }
+
+  .section {
+    margin-bottom: 2.5rem;
+  }
+
+  .section h2 {
+    border-left: 5px solid #5920f6;
+    padding-left: 12px;
+  }
+
+  .info {
+    margin-bottom: 0.6rem;
+    font-size: 1.05rem;
+    color: #333;
+  }
+
+  .articles-list {
+    list-style-type: disc;
+    margin-left: 2rem;
+    color: #444;
+    font-size: 1rem;
+  }
+
+  .articles-list li {
+    margin-bottom: 1rem;
+  }
+
+  /* Grille pour les bons similaires */
+  .similar-bons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+  }
+
+  .similar-card {
+    background: #f7f1fc;
+    border: 2px solid #0f5ec6;
+    border-radius: 12px;
+    padding: 16px 18px;
+    box-shadow: 0 4px 10px rgba(155, 89, 182, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .similar-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 18px rgba(155, 89, 182, 0.25);
+  }
+
+  .similar-card p {
+    margin: 0.4rem 0;
+    color: #9123f1;
+    font-weight: 600;
+  }
+
+  .similar-card .montant {
+    font-weight: 700;
+    color: #391ed3;
+  }
+
+  .details-link {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 6px 12px;
+    font-size: 0.9rem;
+    color: white;
+    background-color: #533bf0;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+  }
+  .details-link:hover {
+    background-color: #4e25e1;
+  }
+
+  a.back-link {
+    display: block;
+    margin-top: 1rem;
+    font-weight: 600;
+    color: #4d3fba;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  a.back-link:hover {
+    color: #4944ad;
+    text-decoration: underline;
+  }
+</style>
+
+<div class="container">
+  <h1>Détails du Bon de Commande</h1>
+  
+  <div class="section">
+    <h2>Informations Générales</h2>
+    <div class="info"><strong>Référence :</strong> {{ bdc.reference }}</div>
+    <div class="info"><strong>Nature :</strong> {{ bdc.nature }}</div>
+    <div class="info"><strong>Montant estimé :</strong> {{ bdc.montant_str or 'N/A' }}</div>
+    <div class="info"><strong>Objet :</strong> {{ bdc.objet }}</div>
+    <div class="info"><strong>Acheteur :</strong> {{ bdc.acheteur }}</div>
+    <div class="info"><strong>Lieu :</strong> {{ bdc.lieu }}</div>
+    <div class="info"><strong>Date limite :</strong> {{ bdc.date_limite_str }}</div>
+    <div class="info"><strong>Date mise en ligne :</strong> {{ bdc.date_mise_en_ligne_str }}</div>
+    <div class="info"><strong>Catégorie :</strong> {{ bdc.categorie }}</div>
+  </div>
+
+  <div class="section">
+    <h2>Articles</h2>
+    <ul class="articles-list">
+      {% for article in bdc.articles %}
+        <li>
+          <strong>{{ article.titre or article.get('titre', 'Titre non disponible') }}</strong><br/>
+          Quantité : {{ article.quantite or article.get('quantite', 'N/A') }}<br/>
+          Caractéristiques : {{ article.caracteristiques or article.get('caracteristiques', 'N/A') }}<br/>
+          Exigences : {{ article.exigences or article.get('exigences', 'N/A') }}
+        </li>
+      {% else %}
+        <li>Aucun article trouvé.</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <!-- <div class="section">
+    <h2>Bons Similaires</h2>
+    {% if similars %}
+    <div class="similar-bons">
+      {% for s in similars %}
+        <div class="similar-card">
+          <p><strong>Référence :</strong> {{ s.reference }}</p>
+          <p><strong>Nature :</strong> {{ s.nature }}</p>
+          <p class="montant">Montant : {{ s.montant_str or 'N/A' }}</p>
+          <a href="{{ url_for('bdc.details', bon_id=s.id) }}" class="details-link">Voir détails</a>
+        </div>
+      {% endfor %}
+    </div>
+    {% else %}
+      <p>Aucun bon similaire trouvé.</p>
+    {% endif %}
+  </div> -->
+
+  <a href="{{ url_for('bdc.details', bon_id=bdc.id) }}" class="back-link">Plus explorer Ce bon</a>
+</div>
+
+<!-- {% endblock %} -->

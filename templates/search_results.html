@@ -1,0 +1,374 @@
+{% extends "base_client.html" %}
+{% block title %}Recherche{% endblock %}
+
+{% block content %}
+
+<style>
+  /* Container formulaire */
+  form {
+    max-width: 1000px;
+    margin: 2rem auto 3rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    padding: 2rem 2.5rem;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem 1.2rem;
+    align-items: center;
+  }
+
+  form input[type="text"],
+  form input[type="number"],
+  form input[type="date"],
+  form select {
+    padding: 10px 14px;
+    font-size: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+    width: 100%;
+    background: #fff;
+    color: var(--text-dark);
+  }
+
+  form input::placeholder {
+    color: var(--text-light);
+  }
+
+  form input:hover,
+  form select:hover {
+    background-color: #fafbff;
+  }
+
+  form input:focus,
+  form select:focus {
+    outline: none;
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 3px rgba(42, 101, 248, 0.2);
+    background-color: #fff;
+  }
+
+  form button {
+    grid-column: 1 / -1;
+    justify-self: center;
+    background: linear-gradient(135deg, #2A65F8, #1a52d4);
+    color: white;
+    font-weight: 700;
+    padding: 12px 30px;
+    font-size: 1.05rem;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform .2s ease, box-shadow .2s ease;
+    width: 200px;
+    box-shadow: 0 6px 18px rgba(26, 82, 212, 0.22);
+  }
+
+  form button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(26, 82, 212, .28);
+  }
+
+  form .form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  form label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--text-light);
+  }
+
+  /* Grille cartes résultats */
+  .cards-container {
+    max-width: 1100px;
+    margin: 0 auto 3rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 20px;
+  }
+
+  /* Carte BDC */
+  .bdc-card-bdc {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    padding: 20px 24px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.3s ease, opacity .4s ease;
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  .bdc-card-bdc.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .bdc-card-bdc:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 26px rgba(0, 0, 0, .08);
+  }
+
+  /* Header carte */
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .card-header h3 {
+    font-size: 1.1rem;
+    color: var(--primary-blue);
+    margin: 0;
+  }
+
+  /* Bouton cœur */
+  .heart-btn {
+    background: none;
+    border: 1px solid var(--border-color);
+    font-size: 1.1rem;
+    color: var(--text-light);
+    cursor: pointer;
+    transition: background-color .2s ease, transform .2s ease, color .2s ease;
+    padding: 6px 10px;
+    border-radius: 10px;
+  }
+
+  .heart-btn:hover {
+    color: var(--primary-blue);
+    background: rgba(42, 101, 248, .06);
+    transform: translateY(-1px);
+  }
+
+  /* Description texte */
+  .card-description {
+    font-size: 0.95rem;
+    color: var(--text-dark);
+    margin: 14px 0 0;
+  }
+
+  /* Lien détails */
+  .details-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 15px;
+    background: linear-gradient(135deg, #2A65F8, #1a52d4);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 10px;
+    font-weight: 600;
+    text-decoration: none;
+    box-shadow: 0 6px 14px rgba(26, 82, 212, 0.22);
+    transition: transform .2s ease, box-shadow .2s ease, filter .2s ease;
+  }
+
+  .details-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 22px rgba(26, 82, 212, .28);
+    filter: brightness(1.02);
+  }
+
+  /* Pagination */
+  .pagination {
+    max-width: 1100px;
+    margin: 0 auto 3rem;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    font-weight: 600;
+    font-size: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .pagination .page-link {
+    background: linear-gradient(135deg, #2A65F8, #1a52d4);
+    color: white;
+    padding: 10px 16px;
+    border-radius: 10px;
+    text-decoration: none;
+    box-shadow: 0 6px 14px rgba(26, 82, 212, 0.22);
+    transition: transform .2s ease, box-shadow .2s ease, filter .2s ease;
+  }
+
+  .pagination .page-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 22px rgba(26, 82, 212, .28);
+    filter: brightness(1.02);
+  }
+
+  .pagination .page-link.disabled {
+    background: #e2e8f0;
+    color: #94a3b8;
+    box-shadow: none;
+    cursor: not-allowed;
+  }
+
+  .pagination .page-info {
+    color: var(--text-light);
+  }
+</style>
+
+{% macro truncate_words(text, max_words=5) %}
+{% if text %}
+{% set words = text.split() %}
+{% if words|length > max_words %}
+{{ words[:max_words]|join(' ') }}...
+{% else %}
+{{ text }}
+{% endif %}
+{% else %}
+{{ '' }}
+{% endif %}
+{% endmacro %}
+
+
+<form method="get" action="{{ url_for('search.recherche') }}" class="search-form">
+  <div class="form-field">
+    <label for="q">mot-clé (nature, lieu..)</label>
+    <input type="text" name="q" value="{{ request.args.get('q', '') }}" />
+  </div>
+
+
+
+  <div class="form-field">
+    <label for="min_montant">Montant (min)</label>
+    <input type="number" step="50" name="min_montant" value="{{ request.args.get('min_montant', '') }}" />
+  </div>
+  <div class="form-field">
+    <label for="max_montant">Montant (max)</label>
+    <input type="number" step="50" name="max_montant" value="{{ request.args.get('max_montant', '') }}" />
+  </div>
+
+
+  <div class="form-field">
+    <label for="date_min">Date de publication (min)</label>
+    <input id="date_min" type="date" name="date_min" value="{{ request.args.get('date_min', '') }}" />
+  </div>
+  <div class="form-field">
+    <label for="date_max">Date de publication (max)</label>
+    <input id="date_max" type="date" name="date_max" value="{{ request.args.get('date_max', '') }}" />
+  </div>
+
+  <select name="nature">
+    <option value="">Toutes les natures</option>
+    {% for n in natures %}
+    <option value="{{ n }}" {% if request.args.get('nature')==n %}selected{% endif %}>{{ n }}</option>
+    {% endfor %}
+  </select>
+
+  <select name="categorie">
+    <option value="">Toutes les catégories</option>
+    <option value="Travaux" {% if request.args.get('categorie')=="Travaux" %}selected{% endif %}>Travaux</option>
+    <option value="Fournitures" {% if request.args.get('categorie')=="Fournitures" %}selected{% endif %}>Fournitures
+    </option>
+    <option value="Services" {% if request.args.get('categorie')=="Services" %}selected{% endif %}>Services</option>
+  </select>
+
+  <select name="search_in">
+    <option value="both" {% if request.args.get('search_in','both')=='both' %}selected{% endif %}>Tous</option>
+    <option value="new" {% if request.args.get('search_in')=='new' %}selected{% endif %}>Nouveaux</option>
+    <option value="old" {% if request.args.get('search_in')=='old' %}selected{% endif %}>Anciens</option>
+  </select>
+
+  <button type="submit">Rechercher</button>
+</form>
+
+<div class="cards-container">
+  {% for bdc in results %}
+  <div class="bdc-card-bdc">
+    <div class="card-header">
+      <h3>{{ bdc.nature or "Nature inconnue" }}</h3>
+    </div>
+    <p class="card-description">
+      {{ bdc.reference }} - {{ bdc.categorie }} -
+      {{ (bdc.lieu.split()[:5] | join(' ')) ~ ('...' if bdc.lieu.split()|length > 5 else '') }}
+      - {{ bdc.date_limite_str }}
+    </p>
+    <a href="{{ url_for('bdc.details', bon_id=bdc.id) }}" class="details-link">Voir détails</a>
+  </div>
+  {% else %}
+  <p style="grid-column: 1 / -1; text-align:center; color:#666;">Aucun résultat trouvé.</p>
+  {% endfor %}
+</div>
+
+<div class="pagination">
+  {% if page > 1 %}
+  <a href="{{ url_for('search.recherche',
+                        q=request.args.get('q', ''),
+                        min_montant=request.args.get('min_montant', ''),
+                        max_montant=request.args.get('max_montant', ''),
+                        date_min=request.args.get('date_min', ''),
+                        date_max=request.args.get('date_max', ''),
+                        nature=request.args.get('nature', ''),
+                        categorie=request.args.get('categorie', ''),
+                        search_in=request.args.get('search_in', 'both'),
+                        page=page-1) }}" class="page-link prev">Précédent</a>
+  {% else %}
+  <span class="page-link disabled">Précédent</span>
+  {% endif %}
+
+  <span class="page-info">Page {{ page }} / {{ total_pages }}</span>
+
+  {% if page < total_pages %} <a href="{{ url_for('search.recherche',
+                        q=request.args.get('q', ''),
+                        min_montant=request.args.get('min_montant', ''),
+                        max_montant=request.args.get('max_montant', ''),
+                        date_min=request.args.get('date_min', ''),
+                        date_max=request.args.get('date_max', ''),
+                        nature=request.args.get('nature', ''),
+                        categorie=request.args.get('categorie', ''),
+                        search_in=request.args.get('search_in', 'both'),
+                        page=page+1) }}" class="page-link next">Suivant</a>
+    {% else %}
+    <span class="page-link disabled">Suivant</span>
+    {% endif %}
+</div>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Reveal cards
+    const cards = document.querySelectorAll('.bdc-card-bdc');
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('show'); io.unobserve(e.target); } });
+    }, { threshold: 0.08 });
+    cards.forEach(c => io.observe(c));
+    // Restaurer le scroll s'il est sauvegardé
+    const savedScroll = sessionStorage.getItem("scrollPos");
+    if (savedScroll !== null) {
+      window.scrollTo(0, parseInt(savedScroll, 10));
+      sessionStorage.removeItem("scrollPos");
+    }
+
+    // Sauvegarder le scroll avant changement de page ou soumission de formulaire
+    document.querySelectorAll("a, form").forEach(el => {
+      if (el.tagName.toLowerCase() === "a") {
+        el.addEventListener("click", function () {
+          sessionStorage.setItem("scrollPos", window.scrollY);
+        });
+      } else if (el.tagName.toLowerCase() === "form") {
+        el.addEventListener("submit", function () {
+          sessionStorage.setItem("scrollPos", window.scrollY);
+        });
+      }
+    });
+
+    // Scroll doux vers la barre de recherche si on clique dedans
+    const searchInput = document.querySelector('form input[name="q"]');
+    if (searchInput) {
+      searchInput.addEventListener("focus", function () {
+        searchInput.scrollIntoView({ behavior: "smooth", block: "center" });
+      });
+    }
+  });
+</script>
+
+
+{% endblock %}

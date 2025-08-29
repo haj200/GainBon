@@ -1,0 +1,87 @@
+{% extends "base_client.html" %}
+
+{% block title %}Explorer un Bon de Commande{% endblock %}
+
+{% block content %}
+
+<div style="display: flex; flex-direction: column; align-items: center; margin-top: 40px;">
+
+  <!-- Titre -->
+  <h1 style="color: #1E3A8A; font-family: 'Poppins', sans-serif; margin-bottom: 20px; font-weight: 600;">
+    Explorez un Bon de Commande
+  </h1>
+
+  <!-- Formulaire -->
+  <div class="content-card" style="width: 100%; max-width: 600px; text-align: center;">
+    <form method="post" action="{{ url_for('main.explore_route') }}">
+      <label for="lien" style="display: block; margin-bottom: 10px; font-weight: 500; color: #1E3A8A;">
+        Collez ici le lien du bon de commande :
+      </label>
+      <input type="text" id="lien" name="lien" 
+             placeholder="https://www.marchespublics.gov.ma/..." 
+             required 
+             style="width: 100%; margin-bottom: 15px; border: 1px solid #1E3A8A; padding: 8px; border-radius: 4px;" />
+      <button type="submit" 
+              style="background-color: #1E3A8A; color: white; padding: 10px 20px; border-radius: 6px; border: none; cursor: pointer; font-weight: 500;">
+        Explorer
+      </button>
+      {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+      <div class="flash-messages">
+        {% for category, message in messages %}
+        <div class="flash-message {{ category }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+      {% endif %}
+      {% endwith %}
+    </form>
+  </div>
+
+</div>
+<style>
+  .flash-messages {
+	margin: 20px auto;
+	width: 90%;
+	max-width: 600px;
+	padding: 10px;
+  }
+  
+  .flash-message {
+	padding: 12px 16px;
+	margin-bottom: 10px;
+	border-radius: 6px;
+	font-size: 0.95rem;
+	font-weight: 500;
+	box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+	transition: all 0.3s ease;
+  }
+  
+  /* Success */
+  .flash-message.success {
+	background-color: #d4edda;
+	color: #155724;
+	border-left: 6px solid #28a745;
+  }
+  
+  /* Error */
+  .flash-message.error {
+	background-color: #f8d7da;
+	color: #721c24;
+	border-left: 6px solid #dc3545;
+  }
+  
+  /* Warning */
+  .flash-message.warning {
+	background-color: #fff3cd;
+	color: #856404;
+	border-left: 6px solid #ffc107;
+  }
+  
+  /* Info */
+  .flash-message.info {
+	background-color: #d1ecf1;
+	color: #0c5460;
+	border-left: 6px solid #17a2b8;
+  }
+</style>
+{% endblock %}

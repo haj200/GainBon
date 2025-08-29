@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Complétion - édit du profile</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/edit_complete_profile.css') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <style>
+    :root {
+      --primary-blue: #2A65F8;
+      --sidebar-bg: #0D244F;
+      --main-bg: #F7F8FC;
+      --card-bg: #FFFFFF;
+      --text-dark: #1B2541;
+      --text-light: #A0AEC0;
+      --border-color: #E2E8F0;
+    }
+    body {
+      background: var(--main-bg);
+      color: var(--text-dark);
+      margin: 0;
+    }
+    .top-bar {
+      background: linear-gradient(135deg, #2A65F8, #1a52d4);
+      color: #fff;
+      text-align: center;
+      font-weight: 700;
+      padding: 16px 20px;
+      box-shadow: 0 4px 14px rgba(26,82,212,.15);
+    }
+    .skip-link { text-align: center; margin: 14px 0 6px; }
+    .skip-link a {
+      color: var(--primary-blue);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .skip-link a:hover { text-decoration: underline; }
+
+    .flash-messages { max-width: 960px; margin: 0 auto 12px; padding: 0 16px; }
+    .flash-message { background: #fff; border: 1px solid var(--border-color); border-left: 4px solid #f59e0b; padding: 10px 12px; border-radius: 8px; }
+
+    .form-wrapper { max-width: 960px; margin: 0 auto; padding: 0 16px 30px; }
+
+    .progress-bar { height: 10px; background: #e8edfb; border-radius: 999px; overflow: hidden; margin: 18px 0 24px; border: 1px solid var(--border-color); }
+    .progress { height: 100%; width: 0; background: linear-gradient(135deg, #2A65F8, #1a52d4); transition: width .3s ease; }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      box-shadow: 0 6px 18px rgba(0,0,0,.05);
+      padding: 20px;
+      margin-bottom: 18px;
+    }
+    .card.hidden { display: none; }
+    .card h2 { display: flex; align-items: center; gap: 10px; margin-top: 0; margin-bottom: 16px; color: var(--primary-blue); font-size: 20px; }
+
+    .card input[type="text"], .card select {
+      width: 98%;
+      padding: 10px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      background: #fff;
+      color: var(--text-dark);
+      transition: border-color .2s ease, box-shadow .2s ease, background-color .2s ease;
+      margin-bottom: 10px;
+    }
+    .card input::placeholder { color: var(--text-light); }
+    .card input:hover, .card select:hover { background: #fafbff; }
+    .card input:focus, .card select:focus { outline: none; border-color: var(--primary-blue); box-shadow: 0 0 0 3px rgba(42,101,248,.2); }
+
+    .btn {
+      background: linear-gradient(135deg, #2A65F8, #1a52d4);
+      color: #fff;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 6px 14px rgba(26,82,212,.22);
+      transition: transform .2s ease, box-shadow .2s ease, filter .2s ease;
+      margin-top: 8px;
+    }
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 10px 22px rgba(26,82,212,.28); filter: brightness(1.02); }
+
+    .scrollable-options { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; max-height: 260px; overflow: auto; padding: 6px; border: 1px dashed var(--border-color); border-radius: 10px; background: #fff; }
+    .scrollable-options.categories { max-height: 200px; }
+
+    h3 { color: var(--text-dark); font-size: 16px; margin: 14px 0 10px; }
+    label { color: var(--text-dark); font-weight: 600; display: block; margin-bottom: 6px; }
+  </style>
+</head>
+
+
+<body>
+  <div class="top-bar">Complétez ou  éditez votre profile</div>
+
+  <div class="skip-link">
+    <a href="/main/skip/explore">Passer cette étape.. retourner à l'acceuil</a>
+  </div>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  <div class="flash-messages">
+    {% for category, message in messages %}
+    {% if category != "success" %}
+    <div class="flash-message {{ category }}">{{ message }}</div>
+    {% endif %}
+    {% endfor %}
+  </div>
+  {% endif %}
+  {% endwith %}
+  <div class="form-wrapper">
+    <div class="progress-bar">
+      <div class="progress" id="progress"></div>
+    </div>
+
+    <!-- Étape 1 : Informations personnelles -->
+    <div class="card" id="step1">
+      <h2><i class="fas fa-user"></i> Informations personnelles</h2>
+      <input type="text" name="nom" id="nom" value="{{ user.nom or '' }}" placeholder="nom">
+      <input type="text" name="prenom" id="prenom" value="{{ user.prenom or '' }}" placeholder="prénom" >
+      <input type="text" name="ville" id="ville" value="{{ user.ville or '' }}" placeholder="ville" >
+      <input type="text" name="telephone" id="telephone" value="{{ user.telephone or '' }}" placeholder="télépone" >
+      <input type="text" name="adresse" id="adresse" value="{{ user.adresse or '' }}" placeholder="adresse" >
+      <input type="text" name="profession" id="profession" value="{{ user.profession or '' }}" placeholder="profession" >
+      <select name="sexe" id="sexe" > <!-- ajoute aussi l'id ici -->
+        <option value=''>-- Sélectionnez votre sexe --</option>
+        <option value="homme" {% if user.sexe=='homme' %}selected{% endif %}>Homme</option>
+        <option value="femme" {% if user.sexe=='femme' %}selected{% endif %}>Femme</option>
+        <option value="autre" {% if user.sexe=='autre' %}selected{% endif %}>Autre</option>
+      </select>
+
+
+      <button class="btn" onclick="goToStep2()">Suivant</button>
+    </div>
+
+    <!-- Étape 2 : Préférences -->
+    <form class="card hidden formComplete" id="step2" method="POST" action="/complete-profile">
+      <h2 style="margin: 20px;"><i class="fas fa-star"></i> Vos préférences</h2>
+
+      <!-- Spécialités -->
+      <h3  style="margin: 20px;"><i class="fas fa-cogs"></i> Spécialités</h3>
+      <div class="scrollable-options" id="natures">
+        <!-- Spécialités dynamiques injectées ici par JS -->
+      </div>
+
+      <!-- Catégories -->
+      <h3  style="margin: 20px;"><i class="fas fa-layer-group"></i> Catégories</h3>
+      <div class="scrollable-options categories" id="categories">
+
+      </div>
+
+      <!-- Villes favorites -->
+      <h3  style="margin: 20px;"><i class="fas fa-city"></i> Villes favorites</h3>
+      <div class="scrollable-options" id="favourite_cities">
+
+      </div>
+
+      <!-- Prix -->
+      <label  style="margin: 20px;">Votre fourchette de prix préférée :</label>
+      <select name="favourite_prices" >
+        <option value="">-- Choisir une fourchette --</option>
+        <option value="basse" {% if user.preferences_user.favourite_prices=='basse' %}selected{% endif %}>Basses (moins de 100 000 DH)</option>
+        <option value="moyenne"  {% if user.preferences_user.favourite_prices=='moyenne' %}selected{% endif %}>Moyennes (100 000 - 500 000 DH)</option>
+        <option value="grande"  {% if user.preferences_user.favourite_prices=='grande' %}selected{% endif %}>Grandes (plus de 500 000 DH)</option>
+      </select>
+
+      <!-- Champs cachés pour envoyer les infos de l'étape 1 -->
+      <input type="hidden" name="nom" id="input_nom">
+      <input type="hidden" name="prenom" id="input_prenom">
+      <input type="hidden" name="ville" id="input_ville">
+      <input type="hidden" name="telephone" id="input_telephone">
+      <input type="hidden" name="adresse" id="input_adresse">
+      <input type="hidden" name="profession" id="input_profession">
+      <input type="hidden" name="sexe" id="input_sexe">
+      <button type="button" class="btn" onclick="backToStep1()">Retour à l'étape précédente</button>
+
+
+      <button type="submit" class="btn">Valider</button>
+    </form>
+  </div>
+
+  <!-- JS / Script -->
+  <script src="{{ url_for('static', filename='js/edit_complete_profile.js') }}"></script>
+  <script>
+    window.oldPreferences = {{ ({
+      'natures': user.preferences_user.favourites_natures_de_prestation | default([]),
+      'cities': user.preferences_user.favourite_cities | default([]),
+      'categories': user.preferences_user.favourites_categories | default([])
+    }) | tojson | safe }};
+  </script>
+
+</body>
+
+</html>
